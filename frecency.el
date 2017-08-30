@@ -10,7 +10,8 @@
 
 ;;; Commentary:
 
-;;
+;; This library provides a way to sort items by "frecency" (frequency
+;; and recency).
 
 ;;;; Installation
 
@@ -25,14 +26,40 @@
 ;; + a
 ;; + dash
 
-;; Then put this file in your load-path, and put this in your init
-;; file:
-
-;; (require 'frecency)
+;; Then put this file in your load-path.
 
 ;;;; Usage
 
+;; Load the library with:
 
+;; (require 'frecency)
+
+;; The library operates on individual items.  That is, you have a list
+;; of items that are frequently (or not-so-frequently) accessed, and
+;; you pass each item to these functions:
+
+;; + `frecency-score' returns the score for an item, which you may use
+;; to sort a list of items (e.g. you may pass `frecency-score' to
+;; `cl-sort' as the `:key' function).
+
+;; + `frecency-update' returns an item with its frecency values
+;; updated.  If the item doesn't have any frecency keys (e.g. if it's
+;; the first time it's been accessed or recorded), they will be added.
+
+;; An item should be an alist or a plist.  These keys are used by the
+;; library:
+
+;; + :frecency-num-timestamps
+;; + :frecency-timestamps
+;; + :frecency-total-count
+
+;; All other keys are ignored and returned with the item.
+
+;; The library uses alists by default, but it can operate on plists,
+;; hash-tables, or other collections by setting `:get-fn' and
+;; `:set-fn' when calling a function (e.g. when using plists, set them
+;; to `plist-get' and `plist-put' respectively).  `:get-fn' should
+;; have the signature (ITEM KEY), and `:set-fn' (ITEM KEY VALUE).
 
 ;;;; Tips
 
@@ -73,7 +100,7 @@
 
 (defgroup frecency nil
   "Settings for `frecency'."
-  :link '(url-link "http://example.com/frecency.el"))
+  :link '(url-link "http://github.com/alphapapa/frecency.el"))
 
 (defcustom frecency-max-timestamps 10
   "Maximum number of timestamps to record for each item."
@@ -106,8 +133,8 @@ accordingly (e.g. `plist-get' and `plist-put' for a plist)."
          (num-timestamps (length timestamps))
          (total-count (or (funcall get-fn item :frecency-total-count) 0)))
     (when (> num-timestamps frecency-max-timestamps)
-      (setq timestamps (cl-subseq timestamps 0 frecency-max-timestamps))
-      (setq num-timestamps frecency-max-timestamps))
+      (setq timestamps (cl-subseq timestamps 0 frecency-max-timestamps)
+            num-timestamps frecency-max-timestamps))
     (--> item
          (funcall set-fn it :frecency-timestamps timestamps)
          (funcall set-fn it :frecency-num-timestamps num-timestamps)
