@@ -88,11 +88,11 @@
 ITEM should be a collection (an alist by default).  If not an
 alist, GET-FN should be set accordingly (e.g. `plist-get' for a
 plist)."
-  (let* ((timestamps (funcall get-fn item :timestamps))
-         (num-timestamps (funcall get-fn item :num-timestamps))
+  (let* ((timestamps (funcall get-fn item :frecency-timestamps))
+         (num-timestamps (funcall get-fn item :frecency-num-timestamps))
          (latest-timestamp (car timestamps))
          (latest-timestamp-score (frecency--score-timestamp latest-timestamp))
-         (total-count (funcall get-fn item :total-count)))
+         (total-count (funcall get-fn item :frecency-total-count)))
     (/ (* total-count latest-timestamp-score)
        num-timestamps)))
 
@@ -102,16 +102,16 @@ ITEM should be a collection (an alist by default).  If not an
 alist, GET-FN and SET-FN should be set
 accordingly (e.g. `plist-get' and `plist-put' for a plist)."
   (let* ((current-time (float-time (current-time)))
-         (timestamps (cons current-time (funcall get-fn item :timestamps)))
+         (timestamps (cons current-time (funcall get-fn item :frecency-timestamps)))
          (num-timestamps (length timestamps))
-         (total-count (or (funcall get-fn item :total-count) 0)))
+         (total-count (or (funcall get-fn item :frecency-total-count) 0)))
     (when (> num-timestamps frecency-max-timestamps)
       (setq timestamps (cl-subseq timestamps 0 frecency-max-timestamps))
       (setq num-timestamps frecency-max-timestamps))
     (--> item
-         (funcall set-fn it :timestamps timestamps)
-         (funcall set-fn it :num-timestamps num-timestamps)
-         (funcall set-fn it :total-count (1+ total-count)))))
+         (funcall set-fn it :frecency-timestamps timestamps)
+         (funcall set-fn it :frecency-num-timestamps num-timestamps)
+         (funcall set-fn it :frecency-total-count (1+ total-count)))))
 
 ;;;;; Private
 
