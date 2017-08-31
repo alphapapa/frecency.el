@@ -115,6 +115,7 @@
 ITEM should be a collection (an alist by default).  If not an
 alist, GET-FN should be set accordingly (e.g. `plist-get' for a
 plist)."
+  (declare (indent defun))
   (let* ((timestamps (funcall get-fn item :frecency-timestamps))
          (num-timestamps (funcall get-fn item :frecency-num-timestamps))
          (latest-timestamp (car timestamps))
@@ -128,6 +129,7 @@ plist)."
 ITEM should be a collection (an alist by default).  If not an
 alist, GET-FN and SET-FN should be set
 accordingly (e.g. `plist-get' and `plist-put' for a plist)."
+  (declare (indent defun))
   (let* ((current-time (float-time (current-time)))
          (timestamps (cons current-time (funcall get-fn item :frecency-timestamps)))
          (num-timestamps (length timestamps))

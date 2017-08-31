@@ -72,8 +72,9 @@ whatever reason, `cl-flet' and `cl-labels' don't work."
                   :frecency-timestamps '(1504108854.0087073)
                   :frecency-num-timestamps 1
                   :frecency-total-count 1)
-    :body (frecency-update input :get-fn #'plist-get
-                           :set-fn #'plist-put))))
+    :body (frecency-update input
+            :get-fn #'plist-get
+            :set-fn #'plist-put))))
 
 (ert-deftest frecency-update-plist ()
   (should
@@ -87,8 +88,9 @@ whatever reason, `cl-flet' and `cl-labels' don't work."
                                          1504108854.0087073)
                   :frecency-num-timestamps 2
                   :frecency-total-count 2)
-    :body (frecency-update input :get-fn #'plist-get
-                           :set-fn #'plist-put))))
+    :body (frecency-update input
+            :get-fn #'plist-get
+            :set-fn #'plist-put))))
 
 (ert-deftest frecency-score-plist ()
   (should
