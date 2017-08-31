@@ -1,3 +1,9 @@
+;; TODO: I think there is an Elisp mocking library, IIRC.  Maybe I could just use that...
+
+;;; Code:
+
+;;;; Macros
+
 (defmacro frecency--test-with-redefined-functions (fns &rest body)
   "Run BODY with functions redefined according to FNS.
 FNS should be a list of (FUNCTION-NAME FUNCTION-BODY) lists,
@@ -26,68 +32,71 @@ whatever reason, `cl-flet' and `cl-labels' don't work."
      (let ((frecency-max-timestamps 10))
        ,@body)))
 
-;; Put stored value first in each test.  Makes it easier to follow.
+(cl-defmacro frecency--test-i/o (&key input output body)
+  `(let ((input ,input)
+         (output ,output))
+     (equal (frecency--test
+             ,body)
+            output)))
+
+;;;; Tests
 
 (ert-deftest frecency-new-alist ()
   (should
-   ;; No existing timestamps or num-timestamps
-   (equal '((:total-count . 1)
-            (:num-timestamps . 1)
-            (:timestamps 1504108854.0087073)
-            (:key . val))
-          (frecency--test
-           (let ((item (a-list :key 'val)))
-             (frecency-update item))))))
+   (frecency--test-i/o
+    :input (a-list :key 'val)
+    :output '((:frecency-total-count . 1)
+              (:frecency-num-timestamps . 1)
+              (:frecency-timestamps 1504108854.0087073)
+              (:key . val))
+    :body (frecency-update input))))
 
 (ert-deftest frecency-update-alist ()
   (should
-   (let ((input '((:num-timestamps . 10)
-                  (:timestamps 1 2 3 4 5 6 7 8 9 10)
-                  (:total-count . 10)
-                  (:key . val)))
-         (result '((:num-timestamps . 10)
-                   (:timestamps 1504108854.0087073 1 2 3 4 5 6 7 8 9)
-                   (:total-count . 11)
-                   (:key . val))))
-     ;; Existing timestamps and num-timestamps
-     (equal result
-            (frecency--test
-             (frecency-update input))))))
+   (frecency--test-i/o
+    :input '((:frecency-num-timestamps . 10)
+             (:frecency-timestamps 1 2 3 4 5 6 7 8 9 10)
+             (:frecency-total-count . 10)
+             (:key . val))
+    :output '((:frecency-num-timestamps . 10)
+              (:frecency-timestamps 1504108854.0087073 1 2 3 4 5 6 7 8 9)
+              (:frecency-total-count . 11)
+              (:key . val))
+    :body (frecency-update input))))
 
 (ert-deftest frecency-new-plist ()
   (should
-   ;; No existing timestamps or num-timestamps
-   (equal (list :one 1
-                :timestamps '(1504108854.0087073)
-                :num-timestamps 1
-                :total-count 1)
-          (frecency--test
-           (let ((item (list :one 1)))
-             (frecency-update item :get-fn #'plist-get
-                              :set-fn #'plist-put))))))
+   (frecency--test-i/o
+    :input (list :one 1)
+    :output (list :one 1
+                  :frecency-timestamps '(1504108854.0087073)
+                  :frecency-num-timestamps 1
+                  :frecency-total-count 1)
+    :body (frecency-update input :get-fn #'plist-get
+                           :set-fn #'plist-put))))
 
 (ert-deftest frecency-update-plist ()
   (should
-   ;; No existing timestamps or num-timestamps
-   (equal (list :one 1
-                :timestamps '(1504108854.0087073
-                              1504108854.0087073)
-                :num-timestamps 2
-                :total-count 2)
-          (frecency--test
-           (let ((item (list :one 1
-                             :timestamps '(1504108854.0087073)
-                             :num-timestamps 1
-                             :total-count 1)))
-             (frecency-update item :get-fn #'plist-get
-                              :set-fn #'plist-put))))))
+   (frecency--test-i/o
+    :input (list :one 1
+                 :frecency-timestamps '(1504108854.0087073)
+                 :frecency-num-timestamps 1
+                 :frecency-total-count 1)
+    :output (list :one 1
+                  :frecency-timestamps '(1504108854.0087073
+                                         1504108854.0087073)
+                  :frecency-num-timestamps 2
+                  :frecency-total-count 2)
+    :body (frecency-update input :get-fn #'plist-get
+                           :set-fn #'plist-put))))
 
 (ert-deftest frecency-score-plist ()
-  (let ((input (list :one 1
-                     :timestamps '(1504108854.0087073
-                                   1504108854.0087073)
-                     :num-timestamps 2
-                     :total-count 2)))
-    ;; Existing timestamps and num-timestamps
-    (frecency--test
-     (frecency-score input :get-fn #'plist-get))))
+  (should
+   (frecency--test-i/o
+    :input (list :one 1
+                 :frecency-timestamps '(1504108854.0087073
+                                        1504108854.0087073)
+                 :frecency-num-timestamps 2
+                 :frecency-total-count 2)
+    :output 100
+    :body (frecency-score input :get-fn #'plist-get))))
