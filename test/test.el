@@ -4,7 +4,7 @@
 
 ;;;; Macros
 
-(defmacro frecency--test-with-redefined-functions (fns &rest body)
+(defmacro frecency--with-mock-functions (fns &rest body)
   "Run BODY with functions redefined according to FNS.
 FNS should be a list of (FUNCTION-NAME FUNCTION-BODY) lists,
 where FUNCTION-BODY is a lambda form.  This is helpful when, for
@@ -24,13 +24,12 @@ whatever reason, `cl-flet' and `cl-labels' don't work."
              ,@body)
          ,@unset-forms))))
 
-
 (defmacro frecency--test (&rest body)
-  `(frecency--test-with-redefined-functions
-     ((current-time (lambda ()
-                      '(22950 57654 8707 234000))))
-     (let ((frecency-max-timestamps 10))
-       ,@body)))
+  `(frecency--with-mock-functions
+    ((current-time (lambda ()
+                     '(22950 57654 8707 234000))))
+    (let ((frecency-max-timestamps 10))
+      ,@body)))
 
 (cl-defmacro frecency--test-i/o (&key input output body)
   `(let ((input ,input)
