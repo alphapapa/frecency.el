@@ -26,10 +26,10 @@ whatever reason, `cl-flet' and `cl-labels' don't work."
 
 (defmacro frecency--test (&rest body)
   `(frecency--with-mock-functions
-    ((current-time (lambda ()
-                     '(22950 57654 8707 234000))))
-    (let ((frecency-max-timestamps 10))
-      ,@body)))
+     ((current-time (lambda ()
+                      '(22950 57654 8707 234000))))
+     (let ((frecency-max-timestamps 10))
+       ,@body)))
 
 (cl-defmacro frecency--test-i/o (&key input output body)
   `(let ((input ,input)
@@ -39,6 +39,8 @@ whatever reason, `cl-flet' and `cl-labels' don't work."
             output)))
 
 ;;;; Tests
+
+;;;;; alists
 
 (ert-deftest frecency-new-alist ()
   (should
@@ -62,6 +64,8 @@ whatever reason, `cl-flet' and `cl-labels' don't work."
               (:frecency-total-count . 11)
               (:key . val))
     :body (frecency-update input))))
+
+;;;;; plists
 
 (ert-deftest frecency-new-plist ()
   (should
