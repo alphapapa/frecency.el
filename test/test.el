@@ -7,22 +7,12 @@
 (defmacro frecency--with-mock-functions (fns &rest body)
   "Run BODY with functions redefined according to FNS.
 FNS should be a list of (FUNCTION-NAME FUNCTION-BODY) lists,
-where FUNCTION-BODY is a lambda form.  This is helpful when, for
-whatever reason, `cl-flet' and `cl-labels' don't work."
+where FUNCTION-BODY is a lambda form."
   (declare (indent defun))
-  (let* ((set-forms (cl-loop for (fn def) in fns
-                             for orig = (intern (concat (symbol-name fn) "-orig"))
-                             collect `(setf (symbol-function ',orig) (symbol-function ',fn))
-                             collect `(setf (symbol-function ',fn) ,def)))
-         (unset-forms (cl-loop for (fn def) in fns
-                               for orig = (intern (concat (symbol-name fn) "-orig"))
-                               collect `(setf (symbol-function ',fn) (symbol-function ',orig)))))
-    `(progn
-       (unwind-protect
-           (progn
-             ,@set-forms
-             ,@body)
-         ,@unset-forms))))
+  `(cl-letf ,(cl-loop for (fn def) in fns
+                      collect `((symbol-function ',fn)
+                                ,def))
+     ,@body))
 
 (defmacro frecency--test (&rest body)
   `(frecency--with-mock-functions
