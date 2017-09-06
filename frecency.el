@@ -22,39 +22,39 @@
 ;;;;; Manual
 
 ;; Install these required packages:
-
+;;
 ;; + a
 ;; + dash
-
+;;
 ;; Then put this file in your load-path.
 
 ;;;; Usage
 
 ;; Load the library with:
-
+;;
 ;; (require 'frecency)
-
+;;
 ;; The library operates on individual items.  That is, you have a list
 ;; of items that are frequently (or not-so-frequently) accessed, and
 ;; you pass each item to these functions:
-
+;;
 ;; + `frecency-score' returns the score for an item, which you may use
 ;; to sort a list of items (e.g. you may pass `frecency-score' to
 ;; `cl-sort' as the `:key' function).
-
+;;
 ;; + `frecency-update' returns an item with its frecency values
 ;; updated.  If the item doesn't have any frecency keys (e.g. if it's
 ;; the first time it's been accessed or recorded), they will be added.
-
+;;
 ;; An item should be an alist or a plist.  These keys are used by the
 ;; library:
-
+;;
 ;; + :frecency-num-timestamps
 ;; + :frecency-timestamps
 ;; + :frecency-total-count
-
+;;
 ;; All other keys are ignored and returned with the item.
-
+;;
 ;; The library uses alists by default, but it can operate on plists,
 ;; hash-tables, or other collections by setting `:get-fn' and
 ;; `:set-fn' when calling a function (e.g. when using plists, set them
@@ -80,12 +80,12 @@
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
