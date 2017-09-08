@@ -55,6 +55,17 @@ where FUNCTION-BODY is a lambda form."
               (:key . val))
     :body (frecency-update input))))
 
+(ert-deftest frecency-score-alist ()
+  (should
+   (frecency--test-i/o
+    :input '((:frecency-num-timestamps . 2)
+             (:frecency-timestamps 1504108854.0087073
+                                   1504108854.0087073)
+             (:frecency-total-count . 2)
+             (:key . val))
+    :output 100
+    :body (frecency-score input))))
+
 ;;;;; plists
 
 (ert-deftest frecency-new-plist ()
