@@ -66,6 +66,45 @@ where FUNCTION-BODY is a lambda form."
     :output 100
     :body (frecency-score input))))
 
+(ert-deftest frecency-sort-alist ()
+  (should
+   (frecency--test-i/o
+    :input '(((:frecency-num-timestamps . 1)
+              (:frecency-timestamps 1504108854.0087073)
+              (:frecency-total-count . 1)
+              (:key . val))
+             ((:frecency-num-timestamps . 10)
+              (:frecency-timestamps 1504108854.0087073
+                                    1504108854.0087073
+                                    1504108854.0087073
+                                    1504108854.0087073
+                                    1504108854.0087073
+                                    1504108854.0087073
+                                    1504108854.0087073
+                                    1504108854.0087073
+                                    1504108854.0087073
+                                    1504108854.0087073)
+              (:frecency-total-count . 11)
+              (:key . val)))
+    :output '(((:frecency-num-timestamps . 10)
+               (:frecency-timestamps 1504108854.0087073
+                                     1504108854.0087073
+                                     1504108854.0087073
+                                     1504108854.0087073
+                                     1504108854.0087073
+                                     1504108854.0087073
+                                     1504108854.0087073
+                                     1504108854.0087073
+                                     1504108854.0087073
+                                     1504108854.0087073)
+               (:frecency-total-count . 11)
+               (:key . val))
+              ((:frecency-num-timestamps . 1)
+               (:frecency-timestamps 1504108854.0087073)
+               (:frecency-total-count . 1)
+               (:key . val)))
+    :body (frecency-sort input))))
+
 ;;;;; plists
 
 (ert-deftest frecency-new-plist ()
@@ -106,3 +145,28 @@ where FUNCTION-BODY is a lambda form."
                  :frecency-total-count 2)
     :output 100
     :body (frecency-score input :get-fn #'plist-get))))
+
+(ert-deftest frecency-sort-plist ()
+  (should
+   (frecency--test-i/o
+    :input (list (list :frecency-num-timestamps 1
+                       :frecency-timestamps (list 1504108854.0087073)
+                       :frecency-total-count 1
+                       :key 'val)
+                 (list :frecency-num-timestamps 10
+                       :frecency-timestamps (list 1504108854.0087073 1504108854.0087073 1504108854.0087073 1504108854.0087073
+                                                  1504108854.0087073 1504108854.0087073 1504108854.0087073 1504108854.0087073
+                                                  1504108854.0087073 1504108854.0087073)
+                       :frecency-total-count 11
+                       :key 'val))
+    :output (list (list :frecency-num-timestamps 10
+                        :frecency-timestamps (list 1504108854.0087073 1504108854.0087073 1504108854.0087073 1504108854.0087073
+                                                   1504108854.0087073 1504108854.0087073 1504108854.0087073 1504108854.0087073
+                                                   1504108854.0087073 1504108854.0087073)
+                        :frecency-total-count 11
+                        :key 'val)
+                  (list :frecency-num-timestamps 1
+                        :frecency-timestamps (list 1504108854.0087073)
+                        :frecency-total-count 1
+                        :key 'val))
+    :body (frecency-sort input :get-fn #'plist-get))))

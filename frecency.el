@@ -42,6 +42,10 @@
 ;; to sort a list of items (e.g. you may pass `frecency-score' to
 ;; `cl-sort' as the `:key' function).
 ;;
+;; + `frecency-sort' returns a list sorted by frecency.  Each item in
+;; the list must itself be a collection with valid frecency keys and
+;; values.
+;;
 ;; + `frecency-update' returns an item with its frecency values
 ;; updated.  If the item doesn't have any frecency keys (e.g. if it's
 ;; the first time it's been accessed or recorded), they will be added.
@@ -123,6 +127,13 @@ plist)."
          (total-count (funcall get-fn item :frecency-total-count)))
     (/ (* total-count latest-timestamp-score)
        num-timestamps)))
+
+(cl-defun frecency-sort (list &optional &key (get-fn #'a-get))
+  "Return LIST sorted by frecency.
+Uses `cl-sort'.  This is a destructive function; it reuses the
+storage of LIST if possible."
+  (cl-sort list #'> :key (lambda (item)
+                           (frecency-score item :get-fn get-fn))))
 
 (cl-defun frecency-update (item &optional &key (get-fn #'a-get) (set-fn #'a-assoc))
   "Return ITEM with current timestamp added and counts incremented.
