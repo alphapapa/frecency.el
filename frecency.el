@@ -1,4 +1,4 @@
-;;; frecency.el --- Library for sorting recently accessed items based on frequency and recency -*- lexical-binding: t; -*-
+;;; frecency.el --- Sort items based on frequency and recency of access -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017 Adam Porter
 
