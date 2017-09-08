@@ -6,7 +6,7 @@
 ;; URL: http://github.com/alphapapa/frecency.el
 ;; Version: 0.1-pre
 ;; Package-Requires: ((emacs "25.1") (a "0.1") (dash "2.13.0"))
-;; Keywords: libraries
+;; Keywords: libraries recency recent frequency frequent
 
 ;;; Commentary:
 
