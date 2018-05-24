@@ -6,7 +6,7 @@
 
 * frecency.el                                                    :noexport:
 
-[[https://melpa.org/#/org-web-tools][file:https://melpa.org/packages/frecency.el-badge.svg]] [[https://stable.melpa.org/#/org-web-tools][file:https://stable.melpa.org/packages/frecency.el-badge.svg]]
+[[https://melpa.org/#/frecency][file:https://melpa.org/packages/frecency-badge.svg]]
 
 This library provides a way to sort items by "frecency" (frequency and recency).
 
