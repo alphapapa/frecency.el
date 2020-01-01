@@ -2,6 +2,12 @@
 
 ;;; Code:
 
+;;;; Requirements
+
+(require 'frecency)
+
+(require 'ert)
+
 ;;;; Macros
 
 (defmacro frecency--with-mock-functions (fns &rest body)
