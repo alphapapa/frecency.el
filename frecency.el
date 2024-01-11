@@ -4,7 +4,7 @@
 
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; URL: http://github.com/alphapapa/frecency.el
-;; Version: 0.1-pre
+;; Version: 1.0
 ;; Package-Requires: ((emacs "25.1") (a "0.1") (dash "2.13.0"))
 ;; Keywords: extensions
 
