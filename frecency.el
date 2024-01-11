@@ -6,7 +6,7 @@
 ;; URL: http://github.com/alphapapa/frecency.el
 ;; Version: 0.1-pre
 ;; Package-Requires: ((emacs "25.1") (a "0.1") (dash "2.13.0"))
-;; Keywords: libraries recency recent frequency frequent
+;; Keywords: extensions
 
 ;;; Commentary:
 
@@ -104,6 +104,7 @@
 
 (defgroup frecency nil
   "Settings for `frecency'."
+  :group 'extensions
   :link '(url-link "http://github.com/alphapapa/frecency.el"))
 
 (defcustom frecency-max-timestamps 10
@@ -130,8 +131,9 @@ plist)."
 
 (cl-defun frecency-sort (list &optional &key (get-fn #'a-get))
   "Return LIST sorted by frecency.
-Uses `cl-sort'.  This is a destructive function; it reuses the
-storage of LIST if possible."
+GET-FN is used as with `frecency-score`, which see.  Uses
+`cl-sort'.  This is a destructive function; it reuses the storage
+of LIST if possible."
   (cl-sort list #'> :key (lambda (item)
                            (frecency-score item :get-fn get-fn))))
 
